@@ -15,6 +15,7 @@ public class InputManager : MonoBehaviour
     private void Awake()
     {
         playerInput = GetComponent<PlayerInput>();
+
         pressAction = playerInput.actions["Press"];
         positionAction = playerInput.actions["Position"];
     }
@@ -29,23 +30,20 @@ public class InputManager : MonoBehaviour
         pressAction.performed -= TouchPressed;
     }
 
-    private void Start()
+    private void Update()
     {
     }
+
 
     private void TouchPressed(InputAction.CallbackContext context)
     {
         float value = context.ReadValue<float>();
-        Debug.Log(value);
 
         Vector3 position = cam.ScreenToWorldPoint(new Vector3(
                                                         positionAction.ReadValue<Vector2>().x,
                                                         positionAction.ReadValue<Vector2>().y,
-                                                        10));
+                                                        cam.transform.position.y));
         cube.transform.position = position;
-
-        Debug.Log("vec2 > " + positionAction.ReadValue<Vector2>());
-        Debug.Log("vec3 > " + position);
     }
 
 }
