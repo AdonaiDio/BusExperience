@@ -4,109 +4,90 @@ using UnityEngine.InputSystem;
 
 using UnityEngine.UI;
 using TMPro;
+using System;
 
 public class CameraScript : MonoBehaviour
 {
 
-    [SerializeField] private PlayerInput playerInput;
-    [SerializeField] private PlayerControls playerControls;
+    [SerializeField] private PlayerInput playerInput; //PlayerInput do InputManager que cuida do InputSystem
 
-    private InputAction zoomScrollCameraAction;
-    private InputAction zoomPinchCameraAction;
-    private Coroutine zoomCoroutine;
+    private InputAction zoomScrollAction;
+
+    private InputAction touch0Contact;
+    private InputAction touch1Contact;
+    private InputAction touch0Position;
+    private InputAction touch1Position;
+
+    private int touchCount = 0;
+    private float prevDistance = 0;
 
     public float cameraSpeed = 0.01f;
-    public float cameraPinchSpeed = 9f;
 
     [SerializeField] private float clampZoomIn;
     [SerializeField] private float clampZoomOut;
 
-    //DEBUG UI
-    [SerializeField] private TextMeshProUGUI txtTouch1Pos;
-    [SerializeField] private TextMeshProUGUI txtTouch2Pos;
-    [SerializeField] private TextMeshProUGUI txtTouch2Contact;
-
     private void Awake()
     {
-        playerControls = new PlayerControls();
-        zoomScrollCameraAction = playerInput.actions["Zoom"];
-        //zoomPinchCameraAction = playerInput.actions["SecondaryTouchContact"];
+        //Mouse Scroll
+        zoomScrollAction = playerInput.actions["Zoom"];
+
+        //Touchscreen Pinch
+        touch0Contact = playerInput.actions["Touch0Contact"];
+        touch0Position = playerInput.actions["Touch0Position"];
+
+        touch1Contact = playerInput.actions["Touch1Contact"];
+        touch1Position = playerInput.actions["Touch1Position"];
     }
     private void Start()
     {
-        Debug.Log(zoomScrollCameraAction);
-        Debug.Log(zoomPinchCameraAction);
-        playerControls.Gaming.SecondaryTouchContact.started += _ => ZoomPinchStart();
-        playerControls.Gaming.SecondaryTouchContact.canceled += _ => ZoomPinchEnd();
+        ScrollInput();
+        PinchInput();
     }
 
     private void OnEnable()
     {
-        zoomScrollCameraAction.performed += CameraZoom;
-        //zoomPinchCameraAction.started += _ => ZoomPinchStart();
-        //zoomPinchCameraAction.canceled += _ => ZoomPinchEnd();
-        playerControls.Enable();
+        zoomScrollAction.Enable();
+        touch0Contact.Enable();
+        touch0Position.Enable();
+        touch1Contact.Enable();
+        touch1Position.Enable();
     }
-
-
     private void OnDisable()
     {
-        zoomScrollCameraAction.performed -= CameraZoom;
-        //zoomPinchCameraAction.started -= _ => ZoomPinchStart();
-        //zoomPinchCameraAction.canceled -= _ => ZoomPinchEnd();
-        playerControls.Disable();
+        zoomScrollAction.Disable();
+        touch0Contact.Disable();
+        touch0Position.Disable();
+        touch1Contact.Disable();
+        touch1Position.Disable();
     }
+    private void ScrollInput()
+    {
+        zoomScrollAction.performed += ctx => CameraZoom(-ctx.ReadValue<Vector2>().y);
+    }
+    private void PinchInput()
+    {
+        touch0Contact.performed += _ => touchCount++;
+        touch0Contact.canceled += _ => { touchCount--; prevDistance = 0; };
 
-    private void Update()
-    {
-    }
-    private void ZoomPinchStart()
-    {
-        Debug.Log("touch_2 contact: true");
-        txtTouch2Contact.text = "touch_2 contact: true";
-        zoomCoroutine = StartCoroutine(ZoomPinchDetection());
-    }
-    private void ZoomPinchEnd()
-    {
-        Debug.Log("touch_2 contact: false");
-        txtTouch2Contact.text = "touch_2 contact: false";
-        StopCoroutine(zoomCoroutine);
-    }
-    IEnumerator ZoomPinchDetection()
-    {
-        float prevDistance = 0f;
-        float currDistance = 0f;
-        while (true)
+        touch1Contact.performed += _ => touchCount++;
+        touch1Contact.canceled += _ => { touchCount--; prevDistance = 0; };
+
+        touch1Position.performed += _ =>
         {
-            txtTouch1Pos.text = "touch_1Pos: " + playerInput.actions["PrimaryFingerPosition"].ReadValue<Vector2>();
-            txtTouch1Pos.text = "touch_1Pos: " + playerInput.actions["SecondaryFingerPosition"].ReadValue<Vector2>();
-            currDistance = Vector2.Distance(playerInput.actions["PrimaryFingerPosition"].ReadValue<Vector2>(),
-                playerInput.actions["SecondaryFingerPosition"].ReadValue<Vector2>());
-            if (currDistance > prevDistance) //Zoom Out
-            {
-                Vector3 nextPosition = transform.position;
-                nextPosition.y += 1;
-                transform.position = Vector3.Slerp(transform.position, 
-                                                   nextPosition,
-                                                   Time.deltaTime * cameraPinchSpeed);
-            }else if (currDistance < prevDistance) //Zoom In
-            {
-                Vector3 nextPosition = transform.position;
-                nextPosition.y -= 1;
-                transform.position = Vector3.Slerp(transform.position,
-                                                   nextPosition,
-                                                   Time.deltaTime * cameraPinchSpeed);
-            }
-            prevDistance = currDistance;
-            yield return null;
-        }
+            if (touchCount < 2)
+                return;
+            float distance = (touch0Position.ReadValue<Vector2>() - touch1Position.ReadValue<Vector2>()).magnitude;
+            if (prevDistance == 0)
+                prevDistance = distance;
+            float difference = distance - prevDistance;
+            prevDistance = distance;
+            CameraZoom(-difference);
+        };
     }
-
-    private void CameraZoom(InputAction.CallbackContext context)
+    private void CameraZoom(float increment)
     {
         this.transform.position = new Vector3(transform.position.x,
-                                            Mathf.Clamp(transform.position.y + context.ReadValue<Vector2>().y * cameraSpeed *-1, clampZoomIn, clampZoomOut),
+                                            Mathf.Clamp(transform.position.y + increment * cameraSpeed, clampZoomIn, clampZoomOut),
                                             transform.position.z);
     }
-
 }
