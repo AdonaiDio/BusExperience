@@ -16,26 +16,26 @@ public class InputManager : MonoBehaviour
     {
         playerInput = GetComponent<PlayerInput>();
 
-        pressAction = playerInput.actions["Press"];
-        positionAction = playerInput.actions["Position"];
+        //pressAction = playerInput.actions["Touch0Contact"];
+        //positionAction = playerInput.actions["Touch0Position"];
     }
 
     private void OnEnable()
     {
-        pressAction.performed += TouchPressed;
+        //pressAction.performed += TouchPressed;
     }
 
     private void OnDisable()
     {
-        pressAction.performed -= TouchPressed;
+        //pressAction.performed -= TouchPressed;
     }
 
     private void Update()
     {
     }
 
-
-    private void TouchPressed(InputAction.CallbackContext context)
+    /*
+    private void TouchPressed(InputAction.CallbackContext context) //velho script de teleport
     {
         float value = context.ReadValue<float>();
 
@@ -45,5 +45,5 @@ public class InputManager : MonoBehaviour
                                                         cam.transform.position.y));
         cube.transform.position = position;
     }
-
+    */
 }

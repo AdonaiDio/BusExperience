@@ -28,24 +28,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             ""id"": ""4ef82ed1-2838-41c8-be57-7bb1def4c058"",
             ""actions"": [
                 {
-                    ""name"": ""Press"",
-                    ""type"": ""Button"",
-                    ""id"": ""ae8143b5-c1a0-4ffc-871c-05d06b786271"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Position"",
-                    ""type"": ""Value"",
-                    ""id"": ""69e83010-c012-4c60-a219-84fdd621c14a"",
-                    ""expectedControlType"": ""Vector2"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": true
-                },
-                {
                     ""name"": ""Zoom"",
                     ""type"": ""PassThrough"",
                     ""id"": ""877013c0-49f3-4af7-a281-c866f9a27da1"",
@@ -92,50 +74,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                 }
             ],
             ""bindings"": [
-                {
-                    ""name"": """",
-                    ""id"": ""f24e72cd-ac3a-481f-ae70-205fa69f9bb2"",
-                    ""path"": ""<Touchscreen>/Press"",
-                    ""interactions"": ""Tap"",
-                    ""processors"": """",
-                    ""groups"": ""Touchscreen"",
-                    ""action"": ""Press"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""f0975bff-5f53-4c01-85c7-5574e8bbd7d9"",
-                    ""path"": ""<Mouse>/leftButton"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Mouse"",
-                    ""action"": ""Press"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""ea54eb74-d047-412e-9a13-74cd2537cec1"",
-                    ""path"": ""<Touchscreen>/touch0/position"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Touchscreen"",
-                    ""action"": ""Position"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""f7906715-8b2c-48ac-a2d9-7bb23fd99d43"",
-                    ""path"": ""<Mouse>/position"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Mouse"",
-                    ""action"": ""Position"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
                 {
                     ""name"": """",
                     ""id"": ""4d7a45de-92f4-43a0-af41-09219b59542f"",
@@ -190,6 +128,28 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""action"": ""Touch0Contact"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4fd4e79b-b14e-428f-a251-48ecc4b45e34"",
+                    ""path"": ""<Mouse>/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse"",
+                    ""action"": ""Touch0Position"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5048f9c7-d93b-4303-835e-ec7536f418bf"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse"",
+                    ""action"": ""Touch0Contact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -221,8 +181,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
 }");
         // Gaming
         m_Gaming = asset.FindActionMap("Gaming", throwIfNotFound: true);
-        m_Gaming_Press = m_Gaming.FindAction("Press", throwIfNotFound: true);
-        m_Gaming_Position = m_Gaming.FindAction("Position", throwIfNotFound: true);
         m_Gaming_Zoom = m_Gaming.FindAction("Zoom", throwIfNotFound: true);
         m_Gaming_Touch0Position = m_Gaming.FindAction("Touch0Position", throwIfNotFound: true);
         m_Gaming_Touch1Position = m_Gaming.FindAction("Touch1Position", throwIfNotFound: true);
@@ -289,8 +247,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     // Gaming
     private readonly InputActionMap m_Gaming;
     private List<IGamingActions> m_GamingActionsCallbackInterfaces = new List<IGamingActions>();
-    private readonly InputAction m_Gaming_Press;
-    private readonly InputAction m_Gaming_Position;
     private readonly InputAction m_Gaming_Zoom;
     private readonly InputAction m_Gaming_Touch0Position;
     private readonly InputAction m_Gaming_Touch1Position;
@@ -300,8 +256,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     {
         private @PlayerControls m_Wrapper;
         public GamingActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
-        public InputAction @Press => m_Wrapper.m_Gaming_Press;
-        public InputAction @Position => m_Wrapper.m_Gaming_Position;
         public InputAction @Zoom => m_Wrapper.m_Gaming_Zoom;
         public InputAction @Touch0Position => m_Wrapper.m_Gaming_Touch0Position;
         public InputAction @Touch1Position => m_Wrapper.m_Gaming_Touch1Position;
@@ -316,12 +270,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         {
             if (instance == null || m_Wrapper.m_GamingActionsCallbackInterfaces.Contains(instance)) return;
             m_Wrapper.m_GamingActionsCallbackInterfaces.Add(instance);
-            @Press.started += instance.OnPress;
-            @Press.performed += instance.OnPress;
-            @Press.canceled += instance.OnPress;
-            @Position.started += instance.OnPosition;
-            @Position.performed += instance.OnPosition;
-            @Position.canceled += instance.OnPosition;
             @Zoom.started += instance.OnZoom;
             @Zoom.performed += instance.OnZoom;
             @Zoom.canceled += instance.OnZoom;
@@ -341,12 +289,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
 
         private void UnregisterCallbacks(IGamingActions instance)
         {
-            @Press.started -= instance.OnPress;
-            @Press.performed -= instance.OnPress;
-            @Press.canceled -= instance.OnPress;
-            @Position.started -= instance.OnPosition;
-            @Position.performed -= instance.OnPosition;
-            @Position.canceled -= instance.OnPosition;
             @Zoom.started -= instance.OnZoom;
             @Zoom.performed -= instance.OnZoom;
             @Zoom.canceled -= instance.OnZoom;
@@ -399,8 +341,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     }
     public interface IGamingActions
     {
-        void OnPress(InputAction.CallbackContext context);
-        void OnPosition(InputAction.CallbackContext context);
         void OnZoom(InputAction.CallbackContext context);
         void OnTouch0Position(InputAction.CallbackContext context);
         void OnTouch1Position(InputAction.CallbackContext context);

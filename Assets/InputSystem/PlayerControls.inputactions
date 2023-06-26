@@ -6,24 +6,6 @@
             "id": "4ef82ed1-2838-41c8-be57-7bb1def4c058",
             "actions": [
                 {
-                    "name": "Press",
-                    "type": "Button",
-                    "id": "ae8143b5-c1a0-4ffc-871c-05d06b786271",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Position",
-                    "type": "Value",
-                    "id": "69e83010-c012-4c60-a219-84fdd621c14a",
-                    "expectedControlType": "Vector2",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
-                },
-                {
                     "name": "Zoom",
                     "type": "PassThrough",
                     "id": "877013c0-49f3-4af7-a281-c866f9a27da1",
@@ -70,50 +52,6 @@
                 }
             ],
             "bindings": [
-                {
-                    "name": "",
-                    "id": "f24e72cd-ac3a-481f-ae70-205fa69f9bb2",
-                    "path": "<Touchscreen>/Press",
-                    "interactions": "Tap",
-                    "processors": "",
-                    "groups": "Touchscreen",
-                    "action": "Press",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "f0975bff-5f53-4c01-85c7-5574e8bbd7d9",
-                    "path": "<Mouse>/leftButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Mouse",
-                    "action": "Press",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "ea54eb74-d047-412e-9a13-74cd2537cec1",
-                    "path": "<Touchscreen>/touch0/position",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Touchscreen",
-                    "action": "Position",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "f7906715-8b2c-48ac-a2d9-7bb23fd99d43",
-                    "path": "<Mouse>/position",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Mouse",
-                    "action": "Position",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
                 {
                     "name": "",
                     "id": "4d7a45de-92f4-43a0-af41-09219b59542f",
@@ -165,6 +103,28 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Touchscreen",
+                    "action": "Touch0Contact",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4fd4e79b-b14e-428f-a251-48ecc4b45e34",
+                    "path": "<Mouse>/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Mouse",
+                    "action": "Touch0Position",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5048f9c7-d93b-4303-835e-ec7536f418bf",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Mouse",
                     "action": "Touch0Contact",
                     "isComposite": false,
                     "isPartOfComposite": false
