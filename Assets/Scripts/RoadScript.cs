@@ -98,6 +98,14 @@ public class RoadScript : MonoBehaviour
                         HighlightRoad_ON();
                         ShowKM_ON();
                     }
+                    else
+                    { // se estou na rua clicada
+                        if (canEmbarkDisembark) // se estiver na parada de onibus
+                        {
+                            //chamar o metodo de embarque e desembarque
+                            busStop.GetComponent<BusStopScript>().CheckForPassengers(playerBus);
+                        }
+                    }
                 }
                 else if (currentRoadState == roadStates.selected)
                 {  //se for selected
