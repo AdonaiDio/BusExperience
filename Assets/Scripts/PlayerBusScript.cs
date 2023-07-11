@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
@@ -24,13 +25,24 @@ public class PlayerBusScript : MonoBehaviour
         navMeshAgent.destination = destinationTransform.position;
     }
 
-
+    private void AtDestination()
+    {
+        //if((transform.position - destinationTransform.position).magnitude <= 0.65f)
+        //{
+            //chegou no centro da rua
+            Events.atDestinationEvent.Invoke(currentRoad);
+        //}
+    }
 
     private void OnTriggerEnter(Collider col)
     {
         if (col.gameObject.tag == "road")
         {
             currentRoad = col.transform;
+        }
+        else if (col.transform == destinationTransform)
+        {
+            AtDestination();
         }
     }
 }

@@ -15,28 +15,29 @@ public class BusStopScript : MonoBehaviour
     //>Se não tiver espaço para todos os passageiros entrarem, então o jogador deve escolher quem sobe.
     public void CheckForPassengers(Transform playerBus)
     {
-        List<Passenger> busPassengers = playerBus.GetComponent<PlayerBusScript>().passengers;
-
+        List<Passenger> auxBusPassengersList = new List<Passenger>();
+        foreach (Passenger pas in playerBus.GetComponent<PlayerBusScript>().passengers)
+        { 
+            auxBusPassengersList.Add(pas);
+        }
         // se tem passageiro no ONIBUS que vai descer, DECE todos
-        foreach (Passenger passenger in busPassengers)
-        {
-            if (passenger.destiny == busStopType)
-            {
+        foreach (Passenger passenger in auxBusPassengersList) {
+            if (passenger.destiny == busStopType) {
                 // remove o passageiro do onibus e somar o dinheiro
                 Debug.Log("Dece");
-                busPassengers.Remove(passenger);
+                playerBus.GetComponent<PlayerBusScript>().passengers.Remove(passenger);
                 playerBus.GetComponent<PlayerBusScript>().money += passenger.Cash;
             };
         }
 
         // se tem espaço e passageiro na parada que vai subir, SOBE todos
-        if (passengers.Count <= (playerBus.GetComponent<PlayerBusScript>().maxPassengerCapacity 
+        if (passengers.Count <= (playerBus.GetComponent<PlayerBusScript>().maxPassengerCapacity
                                  - playerBus.GetComponent<PlayerBusScript>().passengers.Count))
-        {
+        { //cabe
             foreach (Passenger passenger in passengers)
             {
                 // adiciona passageiro ao onibus
-                busPassengers[busPassengers.Count] = passenger;
+                playerBus.GetComponent<PlayerBusScript>().passengers.Add(passenger);
                 Debug.Log("Sobe");
             }
             // remove todos os passageiros da parada de onibus
@@ -45,7 +46,10 @@ public class BusStopScript : MonoBehaviour
         else
         {
             // não há espaço no onibus. Escolher quem sobe.
-            Debug.Log("Opa! Falta espaço. Escolha quem vai sobir.");
+            Debug.Log("Opa! Falta espaço. Escolha quem vai subir.");
+            //abri janela de gerenciamento de passageiros
+
+
         }
     }
 }

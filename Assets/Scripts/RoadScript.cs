@@ -13,13 +13,14 @@ public class RoadScript : MonoBehaviour
 
     private Material roadMaterial;
     [SerializeField] private Transform movePoint;
+    private bool isMoving = false;
 
     private Transform playerBus;
 
     [SerializeField] private int kilometers;
     [SerializeField] private Transform busStop;
     [SerializeField] private Transform[] connectedRoads;
-    [HideInInspector] public bool canEmbarkDisembark;
+    //[HideInInspector] public bool canEmbarkDisembark;
     private enum roadStates { none, selected };
     private roadStates currentRoadState;
 
@@ -34,8 +35,9 @@ public class RoadScript : MonoBehaviour
 
     private void Start()
     {
+        isMoving = false;
         currentRoadState = roadStates.none;
-        canEmbarkDisembark = busStop; //se tiver parada de onibus, então ele pode fazer embarque e desembarque
+        //canEmbarkDisembark = busStop; //se tiver parada de onibus, então ele pode fazer embarque e desembarque
         roadMaterial.SetColor("_EmissionColor", Color.black);
         /*movePoint.position = new Vector3(transform.position.x+0, 
                                          transform.position.y+1, 
@@ -45,10 +47,12 @@ public class RoadScript : MonoBehaviour
     private void OnEnable()
     {
         pressAction.performed += ClickOnRoad;
+        Events.atDestinationEvent.AddListener(AtDestination);
     }
     private void OnDisable()
     {
         pressAction.performed -= ClickOnRoad;
+        Events.atDestinationEvent.RemoveListener(AtDestination);
     }
     private void HighlightRoad_ON()
     {
@@ -66,6 +70,21 @@ public class RoadScript : MonoBehaviour
     {
         Debug.Log("kilometers pop-up OFF");
     }
+    private void AtDestination(Transform currentRoad)
+    {
+        //para reduzir quantas ruas respondem o evento
+        if (currentRoad == transform) {
+            //checar se tem parada e executar tudo que for preciso antes de poder voltar a mudar de rua.
+            if (currentRoad.GetComponent<RoadScript>().busStop) {
+                Debug.Log("canEmbarkDisembark");
+                //chamar o metodo de embarque e desembarque
+                busStop.GetComponent<BusStopScript>().CheckForPassengers(playerBus);
+            }
+            //permitir que possa clicar nas ruas
+            isMoving = false;
+        }
+    }
+
     private void ClickOnRoad(InputAction.CallbackContext context)
     {
         ///Se a rua não estiver selecionada e clicar nela, ela fica "selected".
@@ -74,53 +93,39 @@ public class RoadScript : MonoBehaviour
         ///Mas se o click for na rua no estado "selected" e a rua for adjacente, então além disso,
         ///vai ser o proximo destino do onibus.
 
-        //esperar o bus chegar no destino anterior
-        if((playerBus.position - movePoint.position).magnitude <= 0.65f) {
-            Debug.Log("ta no destino");
+        //esperar o bus chegar no destino anterior //OK
+        if(!isMoving) {
             GameObject clickedObject;
-            //checar que objeto eu cliquei
+            //checar que objeto eu cliquei //OK
             Ray ray = Camera.main.ScreenPointToRay(new Vector2(positionAction.ReadValue<Vector2>().x,
                                                             positionAction.ReadValue<Vector2>().y));
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit))
             {
                 clickedObject = hit.transform.gameObject;
-
-                //Se o player já estiver na rua não pode ter qualquer feedback.
-
+                //Se o player já estiver na rua não pode ter qualquer feedback. //OK
                 if (currentRoadState == roadStates.none
-                    && this.gameObject == clickedObject)
-                { //se for none e clicar nesta rua
-                    if ((playerBus.position - transform.position).magnitude >= 0.7f)
-                    {
+                    && this.gameObject == clickedObject) { //se for 'roadStates.none' e clicar nesta rua //OK
+                    if ((playerBus.position - transform.position).magnitude >= 0.7f) { //se não estiver nesta rua
                         currentRoadState = roadStates.selected;
-                        //feedback de seleção + pop-up
+                        //feedback de seleção + pop-up //OK
                         HighlightRoad_ON();
                         ShowKM_ON();
                     }
-                    else
-                    { // se estou na rua clicada
-                        if (canEmbarkDisembark) // se estiver na parada de onibus
-                        {
-                            //chamar o metodo de embarque e desembarque
-                            busStop.GetComponent<BusStopScript>().CheckForPassengers(playerBus);
-                        }
-                    }
                 }
-                else if (currentRoadState == roadStates.selected)
-                {  //se for selected
+                else if (currentRoadState == roadStates.selected) {  //se for selected
                     currentRoadState = roadStates.none;
                     //feedback removido
                     HighlightRoad_OFF();
                     ShowKM_OFF();
                     foreach (Transform road in playerBus.GetComponent<PlayerBusScript>().currentRoad.GetComponent<RoadScript>().connectedRoads)
                     {
-                            Debug.Log("entrou no " + road.name);
+                        Debug.Log("entrou no " + road.name);
                         //se clicou nesta rua e ela é uma das conectadas
                         if (road == clickedObject.transform
                             && this.gameObject == clickedObject){
                             movePoint.position = transform.position;
-                            
+                            isMoving = true;
                         }
                     }
                 }
