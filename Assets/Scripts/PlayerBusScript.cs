@@ -12,6 +12,7 @@ public class PlayerBusScript : MonoBehaviour
 
 
     public int maxKMCapacity = 100;
+    public int currentKMTraveled = 0;
     public List<Passenger> passengers;
     public int maxPassengerCapacity = 5;
     public int money; //talvez tenha que persistir entre cenas ou ir pra um script de playerData
@@ -20,9 +21,45 @@ public class PlayerBusScript : MonoBehaviour
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
     }
+    private void Start()
+    {
+        //currentKMTraveled = 0;
+    }
     void Update()
     {
         navMeshAgent.destination = destinationTransform.position;
+    }
+    private void OnEnable()
+    {
+        Events.RemovePassangerFromBusEvent.AddListener(RemovePassanger);
+        Events.AddPassangerFromBusEvent.AddListener(AddPassanger);
+        Events.OnEmbarkButtonEvent.AddListener(AddPassangersList);
+    }
+    private void OnDisable()
+    {
+        Events.RemovePassangerFromBusEvent.RemoveListener(RemovePassanger);
+        Events.AddPassangerFromBusEvent.RemoveListener(AddPassanger);
+        Events.OnEmbarkButtonEvent.RemoveListener(AddPassangersList);
+    }
+
+    private void AddPassangersList(List<Passenger> pEmbarkList, List<Passenger> pWaitList)
+    {
+        foreach (Passenger p in pEmbarkList)
+        {
+            AddPassanger(p);
+        }
+    }
+
+    private void AddPassanger(Passenger p)
+    {
+        passengers.Add(p);
+    }
+
+    private void RemovePassanger(Passenger p)
+    {
+        passengers.Remove(p);
+        money += p.Cash;
+        Events.CashInEvent.Invoke();
     }
 
     private void AtDestination()

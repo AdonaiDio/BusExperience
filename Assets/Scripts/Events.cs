@@ -1,13 +1,18 @@
 using System;
 using UnityEngine;
 using UnityEngine.Events;
-
+using PassengerList = System.Collections.Generic.List<Passenger>; //alias da classe genérica "List<Passenger>"
 public static class Events{
 
     //public static readonly Evt onPlayerBusyEventExit = new Evt();
     //public static readonly Evt<MonoBehaviour> onDialogueEventExit = new Evt<MonoBehaviour>();
 
     public static readonly Evt<Transform> atDestinationEvent = new Evt<Transform>();
+    public static readonly Evt<Passenger> RemovePassangerFromBusEvent = new Evt<Passenger>();
+    public static readonly Evt<Passenger> AddPassangerFromBusEvent = new Evt<Passenger>();
+    public static readonly Evt<PassengerList, PassengerList> OnEmbarkButtonEvent = new Evt<PassengerList, PassengerList>();
+    public static readonly Evt CashInEvent = new Evt();
+    public static readonly Evt<int> StartToMoveBusEvent = new Evt<int>();
 }
 public class Evt
 {

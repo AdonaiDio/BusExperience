@@ -18,9 +18,12 @@ public class RoadScript : MonoBehaviour
     private Transform playerBus;
 
     [SerializeField] private int kilometers;
-    [SerializeField] private Transform busStop;
+    [SerializeField] public Transform busStop;
     [SerializeField] private Transform[] connectedRoads;
     //[HideInInspector] public bool canEmbarkDisembark;
+
+    [SerializeField] private KmPopupScript KM_Popup;
+
     private enum roadStates { none, selected };
     private roadStates currentRoadState;
 
@@ -31,6 +34,7 @@ public class RoadScript : MonoBehaviour
         positionAction = playerInput.actions["Touch0Position"];
         roadMaterial = GetComponent<Renderer>().material;
         playerBus = FindObjectOfType<PlayerBusScript>().transform;
+        KM_Popup = FindObjectOfType<KmPopupScript>();
     }
 
     private void Start()
@@ -64,11 +68,12 @@ public class RoadScript : MonoBehaviour
     }
     private void ShowKM_ON()
     {
-        Debug.Log("kilometers: " + kilometers);
+        KM_Popup.gameObject.SetActive(true);
+        KM_Popup.OnStartPopup(transform, kilometers);
     }
     private void ShowKM_OFF()
     {
-        Debug.Log("kilometers pop-up OFF");
+        KM_Popup.OnEndPopup();
     }
     private void AtDestination(Transform currentRoad)
     {
@@ -118,7 +123,9 @@ public class RoadScript : MonoBehaviour
                     //feedback removido
                     HighlightRoad_OFF();
                     ShowKM_OFF();
-                    foreach (Transform road in playerBus.GetComponent<PlayerBusScript>().currentRoad.GetComponent<RoadScript>().connectedRoads)
+                    PlayerBusScript _bus = playerBus.GetComponent<PlayerBusScript>();
+                    RoadScript _busRoad = _bus.currentRoad.GetComponent<RoadScript>();
+                    foreach (Transform road in _busRoad.connectedRoads)
                     {
                         Debug.Log("entrou no " + road.name);
                         //se clicou nesta rua e ela é uma das conectadas
@@ -126,6 +133,9 @@ public class RoadScript : MonoBehaviour
                             && this.gameObject == clickedObject){
                             movePoint.position = transform.position;
                             isMoving = true;
+                            //contar o km andado
+                            Debug.LogWarning("AAAAA km: "+_busRoad.kilometers);
+                            Events.StartToMoveBusEvent.Invoke(_busRoad.kilometers);
                         }
                     }
                 }
