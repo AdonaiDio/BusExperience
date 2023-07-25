@@ -8,6 +8,7 @@ public class BusStopScript : MonoBehaviour
     public enum BusStopType { type1, type2, type3, type4};
     [SerializeField] private List<Passenger> passengers;
     [SerializeField] private BusStopType busStopType;
+    private InputManager inputManager;
 
     private EmbarckWindowManagerScript EWMScript;
     //>Onibus chega na parada
@@ -18,6 +19,7 @@ public class BusStopScript : MonoBehaviour
     private void Awake()
     {
         EWMScript = FindObjectOfType<EmbarckWindowManagerScript>();
+        inputManager = FindObjectOfType<InputManager>();
     }
     private void OnEnable()
     {
@@ -77,6 +79,7 @@ public class BusStopScript : MonoBehaviour
         {
             // não há espaço no onibus. Escolher quem sobe.
             Debug.Log("Opa! Falta espaço. Escolha quem vai subir.");
+            inputManager.SwitchActionMapUIGaming("UI");
             //abri janela de gerenciamento de passageiros
             int _availableSlots = bus.maxPassengerCapacity - bus.passengers.Count;
             EWMScript.StartPassengersInfo(passengers, _availableSlots);

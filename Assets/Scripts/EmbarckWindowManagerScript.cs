@@ -40,6 +40,7 @@ public class EmbarckWindowManagerScript : MonoBehaviour
     [SerializeField] private List<Passenger> passengersEmbarkingType4;
     private GameObject passengersEmbarkingType4UI;
 
+    private InputManager inputManager;
     private void Awake()
     {
         passengersWaitingType1UI = transform.Find(
@@ -58,7 +59,10 @@ public class EmbarckWindowManagerScript : MonoBehaviour
                 "EmbarckWindow/PassangerTransferencePanel/BusList/ClickablePassangerGroup_3").gameObject;
         passengersEmbarkingType4UI = transform.Find(
                 "EmbarckWindow/PassangerTransferencePanel/BusList/ClickablePassangerGroup_4").gameObject;
+
+        inputManager = FindObjectOfType<InputManager>();
     }
+
 
     public void StartPassengersInfo(List<Passenger> _busStopPassengers, int _availablesSlots){
         embarkWindow.SetActive(true);
@@ -284,6 +288,8 @@ public class EmbarckWindowManagerScript : MonoBehaviour
 
         //Disparar evento com a lista a ser adicionada
         Events.OnEmbarkButtonEvent.Invoke(AllPassengerEmbarkList, AllPassengerWaitList);
+        //Enable controls
+        inputManager.SwitchActionMapUIGaming("Gaming");
     }
 
 }

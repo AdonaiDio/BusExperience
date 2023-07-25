@@ -29,4 +29,8 @@ public class InputManager : MonoBehaviour
     {
     }
 
+    public void SwitchActionMapUIGaming(string actionMapName)
+    {
+        playerInput.SwitchCurrentActionMap(actionMapName);
+    }
 }
