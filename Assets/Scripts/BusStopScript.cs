@@ -11,6 +11,8 @@ public class BusStopScript : MonoBehaviour
     private InputManager inputManager;
 
     private EmbarckWindowManagerScript EWMScript;
+
+    private GameObject exclamation;
     //>Onibus chega na parada
     //>Enquanto tiver espaço para todos, todos embarcam
     //>Onibus chega na parada
@@ -20,6 +22,7 @@ public class BusStopScript : MonoBehaviour
     {
         EWMScript = FindObjectOfType<EmbarckWindowManagerScript>();
         inputManager = FindObjectOfType<InputManager>();
+        exclamation = transform.Find("exclamation").gameObject;
     }
     private void OnEnable()
     {
@@ -33,7 +36,10 @@ public class BusStopScript : MonoBehaviour
 
     private void Start()
     {
-
+        if(passengers.Count > 0) 
+            exclamation.SetActive(true);
+        else 
+            exclamation.SetActive(false);
     }
     private void RefreshPassangersList(List<Passenger> pEmbarkList, List<Passenger> pWaitList)
     {
@@ -43,7 +49,9 @@ public class BusStopScript : MonoBehaviour
             passengers.Add(p);
         }
     }
-
+    public List<Passenger> GetPassengers() {
+        return passengers;
+    }
     public void CheckForPassengers(Transform playerBus)
     {
         PlayerBusScript bus = playerBus.GetComponent<PlayerBusScript>();

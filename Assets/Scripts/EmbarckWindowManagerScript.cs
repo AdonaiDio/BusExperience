@@ -44,21 +44,21 @@ public class EmbarckWindowManagerScript : MonoBehaviour
     private void Awake()
     {
         passengersWaitingType1UI = transform.Find(
-            "EmbarckWindow/PassangerTransferencePanel/BusStopList/ClickablePassangerGroup_1").gameObject;
+            "EmbarckWindow/LayoutWindow/PassangerTransferencePanel/BusStopList/ClickablePassangerGroup_1").gameObject;
         passengersWaitingType2UI = transform.Find(
-                "EmbarckWindow/PassangerTransferencePanel/BusStopList/ClickablePassangerGroup_2").gameObject;
+                "EmbarckWindow/LayoutWindow/PassangerTransferencePanel/BusStopList/ClickablePassangerGroup_2").gameObject;
         passengersWaitingType3UI = transform.Find(
-                "EmbarckWindow/PassangerTransferencePanel/BusStopList/ClickablePassangerGroup_3").gameObject;
+                "EmbarckWindow/LayoutWindow/PassangerTransferencePanel/BusStopList/ClickablePassangerGroup_3").gameObject;
         passengersWaitingType4UI = transform.Find(
-                "EmbarckWindow/PassangerTransferencePanel/BusStopList/ClickablePassangerGroup_4").gameObject;
+                "EmbarckWindow/LayoutWindow/PassangerTransferencePanel/BusStopList/ClickablePassangerGroup_4").gameObject;
         passengersEmbarkingType1UI = transform.Find(
-                "EmbarckWindow/PassangerTransferencePanel/BusList/ClickablePassangerGroup_1").gameObject;
+                "EmbarckWindow/LayoutWindow/PassangerTransferencePanel/BusList/ClickablePassangerGroup_1").gameObject;
         passengersEmbarkingType2UI = transform.Find(
-                "EmbarckWindow/PassangerTransferencePanel/BusList/ClickablePassangerGroup_2").gameObject;
+                "EmbarckWindow/LayoutWindow/PassangerTransferencePanel/BusList/ClickablePassangerGroup_2").gameObject;
         passengersEmbarkingType3UI = transform.Find(
-                "EmbarckWindow/PassangerTransferencePanel/BusList/ClickablePassangerGroup_3").gameObject;
+                "EmbarckWindow/LayoutWindow/PassangerTransferencePanel/BusList/ClickablePassangerGroup_3").gameObject;
         passengersEmbarkingType4UI = transform.Find(
-                "EmbarckWindow/PassangerTransferencePanel/BusList/ClickablePassangerGroup_4").gameObject;
+                "EmbarckWindow/LayoutWindow/PassangerTransferencePanel/BusList/ClickablePassangerGroup_4").gameObject;
 
         inputManager = FindObjectOfType<InputManager>();
     }

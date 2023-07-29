@@ -27,6 +27,9 @@ public class RoadScript : MonoBehaviour
     private enum roadStates { none, selected };
     private roadStates currentRoadState;
 
+    private SoundManager soundManager;
+    private SettingsScript settingsScript;
+
     private void Awake()
     {
         //playerInput = FindObjectOfType<PlayerInput>();
@@ -35,11 +38,15 @@ public class RoadScript : MonoBehaviour
         roadMaterial = GetComponent<Renderer>().material;
         playerBus = FindObjectOfType<PlayerBusScript>().transform;
         KM_Popup = FindObjectOfType<KmPopupScript>();
+        soundManager = FindObjectOfType<SoundManager>();
+        settingsScript = FindObjectOfType<SettingsScript>();
     }
 
     private void Start()
     {
         isMoving = false;
+        LeanTween.value(.8f, 0, .5f).setOnUpdate(leanTweenToVolume);
+
         currentRoadState = roadStates.none;
         //canEmbarkDisembark = busStop; //se tiver parada de onibus, então ele pode fazer embarque e desembarque
         roadMaterial.SetColor("_EmissionColor", Color.black);
@@ -81,12 +88,12 @@ public class RoadScript : MonoBehaviour
         if (currentRoad == transform) {
             //checar se tem parada e executar tudo que for preciso antes de poder voltar a mudar de rua.
             if (currentRoad.GetComponent<RoadScript>().busStop) {
-                Debug.Log("canEmbarkDisembark");
                 //chamar o metodo de embarque e desembarque
                 busStop.GetComponent<BusStopScript>().CheckForPassengers(playerBus);
             }
             //permitir que possa clicar nas ruas
             isMoving = false;
+            LeanTween.value(.8f, 0, .5f).setOnUpdate(leanTweenToVolume);
         }
     }
 
@@ -116,6 +123,7 @@ public class RoadScript : MonoBehaviour
                         //feedback de seleção + pop-up //OK
                         HighlightRoad_ON();
                         ShowKM_ON();
+                        soundManager.PlaySFX(soundManager.sfxs[2]);
                     }
                 }
                 else if (currentRoadState == roadStates.selected) {  //se for selected
@@ -127,19 +135,22 @@ public class RoadScript : MonoBehaviour
                     RoadScript _busRoad = _bus.currentRoad.GetComponent<RoadScript>();
                     foreach (Transform road in _busRoad.connectedRoads)
                     {
-                        Debug.Log("entrou no " + road.name);
                         //se clicou nesta rua e ela é uma das conectadas
                         if (road == clickedObject.transform
                             && this.gameObject == clickedObject){
                             movePoint.position = transform.position;
                             isMoving = true;
+                            LeanTween.value(0,0.8f,.5f).setOnUpdate(leanTweenToVolume);
                             //contar o km andado
-                            Debug.LogWarning("AAAAA km: "+_busRoad.kilometers);
                             Events.StartToMoveBusEvent.Invoke(_busRoad.kilometers);
                         }
                     }
                 }
             }
         }
+    }
+    private void leanTweenToVolume(float volume)
+    {
+        soundManager.busMotorSource.volume = volume;
     }
 }

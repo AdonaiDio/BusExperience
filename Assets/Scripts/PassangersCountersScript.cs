@@ -190,7 +190,7 @@ public class PassangersCountersScript : MonoBehaviour
                 break;
         }
     }
-
+    
     public void CheckForPriceTagActive(GameObject priceTagUI)
     {
         if (priceTagUI.activeSelf) { 
